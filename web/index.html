@@ -14,7 +14,15 @@
 						<th class="w20">库存</th>
 						<th>操作</th>
 					</tr>
-					<tr
+					<tr th:if="${#lists.isEmpty(session.fruitList)}">
+						<td colspan="4">对不起，库存为空！</td>
+					</tr>
+					<tr th:unless="${#lists.isEmpty(session.fruitList)}" th:each="fruit:${session.fruitList}">
+						<td th:text="${fruit.fname}">apple</td>
+						<td th:text="${fruit.price}">5</td>
+						<td th:text="${fruit.fcount}">20</td>
+						<td><img src="imgs/del.jpg" class="delImg"/></td>
+					</tr>
 				</table>
 			</div>
 		</div>

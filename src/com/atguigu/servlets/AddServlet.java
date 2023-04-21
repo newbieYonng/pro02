@@ -5,11 +5,13 @@ import com.atguigu.fruit.dao.impl.FruitDAOImpl;
 import com.atguigu.fruit.pojo.Fruit;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@WebServlet("/add.do")
 public class AddServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -26,6 +28,6 @@ public class AddServlet extends HttpServlet {
         FruitDAO fruitDAO = new FruitDAOImpl();
         boolean flag = fruitDAO.addFruit(new Fruit(0 , fname , price , fcount , remark));
 
-        System.out.println(flag ? "添加成功！" : "添加失败！");
+        response.sendRedirect("index");
     }
 }

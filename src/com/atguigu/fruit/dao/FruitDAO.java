@@ -19,4 +19,10 @@ public interface FruitDAO {
 
     //删除特定库存记录
     boolean delFruit(String fname);
+
+    //根据ID查询特定库存
+    Fruit getFruitByID(Integer fid);
+
+    //根据ID删记录
+    boolean delFruitByID(Integer fid);
 }

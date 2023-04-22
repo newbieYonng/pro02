@@ -9,7 +9,7 @@ import java.util.List;
 
 public abstract class BaseDAO<T> {
     public final String DRIVER = "com.mysql.jdbc.Driver" ;
-    public final String URL = "jdbc:mysql://localhost:3306/testdb?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+    public final String URL = "jdbc:mysql://localhost:3306/testdb?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true";
     public final String USER = "root";
     public final String PWD = "root";
 

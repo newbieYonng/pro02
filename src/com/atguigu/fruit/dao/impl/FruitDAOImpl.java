@@ -13,6 +13,11 @@ public class FruitDAOImpl extends BaseDAO<Fruit> implements FruitDAO {
     }
 
     @Override
+    public List<Fruit> getFruitListWithPageNo(Integer pageNo) {
+        return super.executeQuery("select * from t_fruit limit ?, 3", (pageNo - 1) * 3);
+    }
+
+    @Override
     public boolean addFruit(Fruit fruit) {
         String sql = "insert into t_fruit values(0,?,?,?,?)";
         int count = super.executeUpdate(sql, fruit.getFname(), fruit.getPrice(), fruit.getFcount(), fruit.getRemark());

@@ -8,6 +8,9 @@ public interface FruitDAO {
     //查询库存列表
     List<Fruit> getFruitList();
 
+    //分页查询
+    List<Fruit> getFruitListWithPageNo(Integer pageNo);
+
     //新增库存
     boolean addFruit(Fruit fruit);
 

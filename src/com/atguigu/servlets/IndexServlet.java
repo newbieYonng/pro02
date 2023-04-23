@@ -25,9 +25,13 @@ public class IndexServlet extends ViewBaseServlet {
 
         FruitDAOImpl fruitDAO = new FruitDAOImpl();
         List<Fruit> fruitList = fruitDAO.getFruitListWithPageNo(pageNo);
+        int fruitCount = fruitDAO.getFruitPageCount();
+
+        int pageCount = (fruitCount + 3 - 1) / 3;
 
         HttpSession session = request.getSession();
         session.setAttribute("pageNo", pageNo);
+        session.setAttribute("pageCount", pageCount);
         session.setAttribute("fruitList", fruitList);
 
         super.processTemplate("index", request, response);

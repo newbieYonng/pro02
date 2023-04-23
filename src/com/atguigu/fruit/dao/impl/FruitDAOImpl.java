@@ -18,6 +18,11 @@ public class FruitDAOImpl extends BaseDAO<Fruit> implements FruitDAO {
     }
 
     @Override
+    public int getFruitPageCount() {
+        return ((Long)super.executeComplexQuery("select count(*) from t_fruit")[0]).intValue();
+    }
+
+    @Override
     public boolean addFruit(Fruit fruit) {
         String sql = "insert into t_fruit values(0,?,?,?,?)";
         int count = super.executeUpdate(sql, fruit.getFname(), fruit.getPrice(), fruit.getFcount(), fruit.getRemark());

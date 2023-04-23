@@ -11,6 +11,9 @@ public interface FruitDAO {
     //分页查询
     List<Fruit> getFruitListWithPageNo(Integer pageNo);
 
+    //获取页数
+    int getFruitPageCount();
+
     //新增库存
     boolean addFruit(Fruit fruit);
 

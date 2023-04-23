@@ -4,6 +4,18 @@ function delFruit(fid){
     }
 }
 
-window.onload = function page(pageNo){
+/*错误写法
+function page(pageNo){
+    window.location.href='index?pageNo='+pageNo;
+正确写法
+Function()
+{
+    window.page = Function(pageNo)
+    {
+        window.location.href = 'index?pageNo=' + pageNo;
+    }
+}
+}*/
+page=function (pageNo) {
     window.location.href='index?pageNo='+pageNo;
 }

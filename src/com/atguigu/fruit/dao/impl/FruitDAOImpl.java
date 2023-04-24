@@ -18,8 +18,18 @@ public class FruitDAOImpl extends BaseDAO<Fruit> implements FruitDAO {
     }
 
     @Override
+    public List<Fruit> getFruitListWithRegx(String keyword, Integer pageNo) {
+        return super.executeQuery("select * from t_fruit where fname like ? limit ?, 3", "%" + keyword + "%", (pageNo - 1) * 3);
+    }
+
+    @Override
     public int getFruitPageCount() {
-        return ((Long)super.executeComplexQuery("select count(*) from t_fruit")[0]).intValue();
+        return ((Long) super.executeComplexQuery("select count(*) from t_fruit")[0]).intValue();
+    }
+
+    @Override
+    public int getFruitPageCountWithRegx(String keyword) {
+        return ((Long) super.executeComplexQuery("select count(*) from t_fruit where fname like ?", "%" + keyword + "%")[0]).intValue();
     }
 
     @Override

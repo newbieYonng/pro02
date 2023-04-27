@@ -1,26 +1,19 @@
-package com.atguigu.servlets;
+package com.atguigu.controllers;
 
 import com.atguigu.fruit.dao.FruitDAO;
 import com.atguigu.fruit.dao.impl.FruitDAOImpl;
 import com.atguigu.fruit.pojo.Fruit;
-import com.atguigu.myspringmvc.ViewBaseServlet;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
-@WebServlet("/fruit.do")
-public class FruitServlet extends ViewBaseServlet {
+public class FruitController {
 
     private FruitDAOImpl fruitDAO = new FruitDAOImpl();
 
-    @Override
+    /*@Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
@@ -41,7 +34,7 @@ public class FruitServlet extends ViewBaseServlet {
                 }
             }
         }
-        /**
+        *//**
          * 用反射优化
          * switch (operate) {
             case "index":
@@ -61,29 +54,21 @@ public class FruitServlet extends ViewBaseServlet {
                 break;
             default:
                 throw new RuntimeException("error operate!!!");
-        }*/
-    }
+        }*//*
+    }*/
 
-    private void index(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private String index(HttpServletRequest request, String oper, String keyword, Integer pageNo) throws IOException {
         HttpSession session = request.getSession();
-        int pageNo = 1;
-        String keyword = null;
 
-        //如果oper!=null 说明通过表单的查询按钮点击过来的
-        //如果oper是空的，说明不是通过表单的查询按钮点击过来的
-        String oper = request.getParameter("oper");
+        if (pageNo == null)
+            pageNo = 1;
 
         if (oper != null && !"".equals(oper) && "search".equals(oper)) {
             pageNo = 1;
-            keyword = request.getParameter("keyword");
             if (keyword == null || "".equals(keyword))
                 keyword = "";
             session.setAttribute("keyword", keyword);
         } else {
-            String pageNoStr = request.getParameter("pageNo");
-            if (pageNoStr != null && !"".equals(pageNoStr)) {
-                pageNo = Integer.parseInt(pageNoStr);
-            }
             Object keywordObj = session.getAttribute("keyword");
             if (keywordObj != null)
                 keyword = keywordObj.toString();
@@ -101,53 +86,39 @@ public class FruitServlet extends ViewBaseServlet {
         session.setAttribute("pageCount", pageCount);
         session.setAttribute("fruitList", fruitList);
 
-        super.processTemplate("index", request, response);
+        return "index";
     }
 
-    private void add(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String fname = request.getParameter("fname");
-        String priceStr = request.getParameter("price");
-        Integer price = Integer.parseInt(priceStr);
-        String fcountStr = request.getParameter("fcount");
-        Integer fcount = Integer.parseInt(fcountStr);
-        String remark = request.getParameter("remark");
-
+    private String add(String fname, Integer price, Integer fcount, String remark) throws IOException {
         FruitDAO fruitDAO = new FruitDAOImpl();
-        boolean flag = fruitDAO.addFruit(new Fruit(0 , fname , price , fcount , remark));
+        fruitDAO.addFruit(new Fruit(0 , fname , price , fcount , remark));
 
-        response.sendRedirect("fruit.do");
+        return "redirect:fruit.do";
     }
 
-    private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int fid = Integer.parseInt(request.getParameter("fid"));
-
-        fruitDAO.delFruitByID(fid);
-
-        response.sendRedirect("fruit.do");
+    private String delete(Integer fid) throws IOException {
+        if(fid != null){
+            fruitDAO.delFruitByID(fid);
+            return "redirect:fruit.do";
+        }
+        return "error";
     }
 
-    private void edit(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String fidStr = request.getParameter("fid");
-        FruitDAOImpl fruitDAO = new FruitDAOImpl();
-        Fruit fruit = fruitDAO.getFruitByID(Integer.parseInt(fidStr));
-        request.setAttribute("fruit", fruit);
+    private String edit(HttpServletRequest request, Integer fid) throws IOException {
+        if (fid != null) {
+            Fruit fruit = fruitDAO.getFruitByID(fid);
+            request.setAttribute("fruit", fruit);
 
-        //response.sendRedirect("/edit.html");
-        super.processTemplate("edit", request, response);
+            return "edit";
+        }
+        return "error";
     }
 
-    private void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int fid = Integer.parseInt(request.getParameter("fid"));
-        String fname = request.getParameter("fname");
-        int price = Integer.parseInt(request.getParameter("price"));
-        int fcount = Integer.parseInt(request.getParameter("fcount"));
-        String remark = request.getParameter("remark");
-
+    private String update(Integer fid, String fname, Integer price, Integer fcount, String remark) throws IOException {
         Fruit fruit = new Fruit(fid, fname, price, fcount, remark);
-
         fruitDAO.updateFruit(fruit);
 
-        response.sendRedirect("fruit.do");
+        return "redirect:fruit.do";
     }
 
 }

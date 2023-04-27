@@ -121,7 +121,7 @@ public class DispatcherServlet extends ViewBaseServlet {
                 method.setAccessible(true);
                 Object returnObj = null;
                 try {
-                    returnObj = method.invoke(controllerBeanObj, request, response);
+                    returnObj = method.invoke(controllerBeanObj, parameterValues);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {

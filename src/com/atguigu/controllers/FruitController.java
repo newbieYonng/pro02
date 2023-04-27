@@ -34,7 +34,8 @@ public class FruitController {
                 }
             }
         }
-        *//**
+    }*/
+    /**
          * 用反射优化
          * switch (operate) {
             case "index":
@@ -54,8 +55,7 @@ public class FruitController {
                 break;
             default:
                 throw new RuntimeException("error operate!!!");
-        }*//*
-    }*/
+        }*/
 
     private String index(HttpServletRequest request, String oper, String keyword, Integer pageNo) throws IOException {
         HttpSession session = request.getSession();

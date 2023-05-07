@@ -1,4 +1,4 @@
-package com.atguigu.myspringmvc;
+package com.atguigu.servlets;
 
 import com.atguigu.fruit.io.BeanFactory;
 import com.atguigu.fruit.io.impl.ClassPathXmlApplicationContext;
@@ -26,7 +26,7 @@ public class DispatcherServlet extends ViewBaseServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
+        //request.setCharacterEncoding("UTF-8");
 
         //获取@WebServlet("*.do")中*具体是哪个操作
         String servletPath = request.getServletPath();
@@ -80,10 +80,9 @@ public class DispatcherServlet extends ViewBaseServlet {
                 Object returnObj = null;
                 try {
                     returnObj = method.invoke(controllerBeanObj, parameterValues);
-                } catch (IllegalAccessException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                    throw new DispatcherServletException("DispatcherServlet出错了...");
                 }
 
                 //3.视图处理

@@ -22,7 +22,7 @@ public interface FruitService {
     int getFruitPageCountWithRegx(String keyword);
 
     //新增库存
-    boolean addFruit(Fruit fruit);
+    void addFruit(Fruit fruit);
 
     //修改库存
     boolean updateFruit(Fruit fruit);

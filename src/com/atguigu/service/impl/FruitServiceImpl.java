@@ -3,6 +3,7 @@ package com.atguigu.service.impl;
 import com.atguigu.fruit.dao.FruitDAO;
 import com.atguigu.fruit.pojo.Fruit;
 import com.atguigu.service.FruitService;
+import com.atguigu.util.ConnUtil;
 
 import java.util.List;
 
@@ -36,8 +37,11 @@ public class FruitServiceImpl implements FruitService {
     }
 
     @Override
-    public boolean addFruit(Fruit fruit) {
-        return fruitDAO.addFruit(fruit);
+    public void addFruit(Fruit fruit) {
+        fruitDAO.addFruit(fruit);
+        Fruit fruit1 = fruitDAO.getFruitByID(3);
+        fruit1.setFcount(999);
+        fruitDAO.updateFruit(fruit1);
     }
 
     @Override

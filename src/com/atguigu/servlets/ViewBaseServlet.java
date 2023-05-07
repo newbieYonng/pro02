@@ -1,4 +1,4 @@
-package com.atguigu.myspringmvc;
+package com.atguigu.servlets;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;

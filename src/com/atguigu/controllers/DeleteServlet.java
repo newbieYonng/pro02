@@ -2,7 +2,7 @@ package com.atguigu.controllers;
 
 import com.atguigu.fruit.dao.FruitDAO;
 import com.atguigu.fruit.dao.impl.FruitDAOImpl;
-import com.atguigu.myspringmvc.ViewBaseServlet;
+import com.atguigu.servlets.ViewBaseServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

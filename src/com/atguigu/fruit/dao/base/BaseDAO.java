@@ -1,5 +1,7 @@
 package com.atguigu.fruit.dao.base;
 
+import com.atguigu.util.ConnUtil;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -8,10 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseDAO<T> {
-    public final String DRIVER = "com.mysql.jdbc.Driver" ;
-    public final String URL = "jdbc:mysql://localhost:3306/testdb?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true";
-    public final String USER = "root";
-    public final String PWD = "root";
 
     protected Connection conn ;
     protected PreparedStatement psmt ;
@@ -34,35 +32,16 @@ public abstract class BaseDAO<T> {
             entityClass = Class.forName(actualType.getTypeName());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            throw new DAOException("BaseDAO 构造方法出错了，可能的原因是没有指定<>中的类型");
         }
     }
 
     protected Connection getConn(){
-        try {
-            //1.加载驱动
-            Class.forName(DRIVER);
-            //2.通过驱动管理器获取连接对象
-            return DriverManager.getConnection(URL, USER, PWD);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-        return null ;
+        return ConnUtil.getConn();
     }
 
     protected void close(ResultSet rs , PreparedStatement psmt , Connection conn){
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-            if(psmt!=null){
-                psmt.close();
-            }
-            if(conn!=null && !conn.isClosed()){
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
     //给预处理命令对象设置参数
@@ -94,14 +73,11 @@ public abstract class BaseDAO<T> {
                     return ((Long)rs.getLong(1)).intValue();
                 }
             }
-
-            return count ;
+            return count;
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            close(rs,psmt,conn);
+            throw new DAOException("BaseDAO executeUpdate出错了");
         }
-        return 0;
     }
 
     //通过反射技术给obj对象的property属性赋propertyValue值
@@ -116,6 +92,7 @@ public abstract class BaseDAO<T> {
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
+            throw new DAOException("BaseDAO setValue出错了");
         }
     }
 
@@ -144,8 +121,7 @@ public abstract class BaseDAO<T> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            close(rs,psmt,conn);
+            throw new DAOException("BaseDAO executeComplexQuery出错了");
         }
         return null ;
     }
@@ -177,12 +153,9 @@ public abstract class BaseDAO<T> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } finally {
-            close(rs,psmt,conn);
+            throw new DAOException("BaseDAO load出错了");
         }
         return null ;
     }
@@ -214,14 +187,9 @@ public abstract class BaseDAO<T> {
                 }
                 list.add(entity);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } finally {
-            close(rs,psmt,conn);
+            throw new DAOException("BaseDAO executeQuery出错了");
         }
         return list ;
     }

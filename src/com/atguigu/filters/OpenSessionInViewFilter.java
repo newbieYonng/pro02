@@ -23,13 +23,13 @@ public class OpenSessionInViewFilter implements Filter {
             TransactionManager.commit();
             System.out.println("提交事务...");
         } catch (SQLException e) {
-            e.printStackTrace();
             try {
                 TransactionManager.rollback();
                 System.out.println("回滚事务....");
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            e.printStackTrace();
         }
     }
 

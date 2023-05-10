@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/index")
+/*@WebServlet("/index")*/
 public class IndexServlet extends ViewBaseServlet {
 
     private FruitDAOImpl fruitDAO = new FruitDAOImpl();

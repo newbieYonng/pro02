@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/edit.do")
+/*@WebServlet("/edit.do")*/
 public class EtidServlet extends ViewBaseServlet {
 
     @Override

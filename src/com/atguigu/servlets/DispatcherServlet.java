@@ -8,7 +8,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
@@ -25,8 +24,8 @@ public class DispatcherServlet extends ViewBaseServlet {
     }
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //request.setCharacterEncoding("UTF-8");
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
 
         //获取@WebServlet("*.do")中*具体是哪个操作
         String servletPath = request.getServletPath();
@@ -39,61 +38,65 @@ public class DispatcherServlet extends ViewBaseServlet {
         if (operate == null || "".equals(operate))
             operate = "index";
 
-        Method[] methods = controllerBeanObj.getClass().getDeclaredMethods();
-        for (Method method : methods) {
-            String methodName = method.getName();
-            if (operate.equals(methodName)) {
-                //1.统一获取请求参数
-                //1-1.获取当前方法的参数，返回参数数组
-                Parameter[] parameters = method.getParameters();
-                //1-2.parameterValues 用来承载参数的值
-                Object[] parameterValues = new Object[parameters.length];
-                for (int i = 0; i < parameters.length; i++) {
-                    Parameter parameter = parameters[i];
-                    String parameterName = parameter.getName();
-                    if ("request".equals(parameterName)) {
-                        parameterValues[i] = request;
-                    } else if ("response".equals(parameterName)) {
-                        parameterValues[i] = response;
-                    } else if ("session".equals(parameterName)) {
-                        parameterValues[i] = request.getSession();
-                    } else {
-                        //从请求中获取参数值
-                        String requestParameter = request.getParameter(parameterName);
-                        String typeName = parameter.getType().getName();
+        try {
+            Method[] methods = controllerBeanObj.getClass().getDeclaredMethods();
+            for(Method method : methods){
+                if(operate.equals(method.getName())){
+                    //1.统一获取请求参数
 
-                        Object parameterObj = requestParameter;
+                    //1-1.获取当前方法的参数，返回参数数组
+                    Parameter[] parameters = method.getParameters();
+                    //1-2.parameterValues 用来承载参数的值
+                    Object[] parameterValues = new Object[parameters.length];
+                    for (int i = 0; i < parameters.length; i++) {
+                        Parameter parameter = parameters[i];
+                        String parameterName = parameter.getName() ;
+                        //如果参数名是request,response,session 那么就不是通过请求中获取参数的方式了
+                        if("request".equals(parameterName)){
+                            parameterValues[i] = request ;
+                        }else if("response".equals(parameterName)){
+                            parameterValues[i] = response ;
+                        }else if("session".equals(parameterName)){
+                            parameterValues[i] = request.getSession() ;
+                        }else{
+                            //从请求中获取参数值
+                            String parameterValue = request.getParameter(parameterName);
+                            String typeName = parameter.getType().getName();
 
-                        if (parameterObj != null) {
-                            if ("java.lang.Integer".equals(typeName)) {
-                                parameterObj = Integer.parseInt(requestParameter);
+                            Object parameterObj = parameterValue ;
+
+                            if(parameterObj!=null) {
+                                if ("java.lang.Integer".equals(typeName)) {
+                                    parameterObj = Integer.parseInt(parameterValue);
+                                }
                             }
-                        }
 
-                        parameterValues[i] = parameterObj;
+                            parameterValues[i] = parameterObj ;
+                        }
+                    }
+                    //2.controller组件中的方法调用
+                    method.setAccessible(true);
+                    Object returnObj = method.invoke(controllerBeanObj,parameterValues);
+
+                    //3.视图处理
+                    String methodReturnStr = (String)returnObj ;
+                    if(methodReturnStr.startsWith("redirect:")){        //比如：  redirect:fruit.do
+                        String redirectStr = methodReturnStr.substring("redirect:".length());
+                        response.sendRedirect(redirectStr);
+                    }else{
+                        super.processTemplate(methodReturnStr,request,response);    // 比如：  "edit"
                     }
                 }
-
-                //2.controller组件中的方法调用
-                //获取私有方法
-                method.setAccessible(true);
-                Object returnObj = null;
-                try {
-                    returnObj = method.invoke(controllerBeanObj, parameterValues);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new DispatcherServletException("DispatcherServlet出错了...");
-                }
-
-                //3.视图处理
-                String methodReturnStr = returnObj.toString();
-                if (methodReturnStr.startsWith("redirect:")) {
-                    String redirectStr = methodReturnStr.substring("redirect:".length());
-                    response.sendRedirect(redirectStr);
-                } else {
-                    super.processTemplate(methodReturnStr, request, response);
-                }
             }
+
+            /*
+            }else{
+                throw new RuntimeException("operate值非法!");
+            }
+            */
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DispatcherServletException("DispatcherServlet出错了...");
         }
     }
 

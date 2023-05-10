@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/del.do")
+/*@WebServlet("/del.do")*/
 public class DeleteServlet extends ViewBaseServlet {
 
     private FruitDAO fruitDAO = new FruitDAOImpl();

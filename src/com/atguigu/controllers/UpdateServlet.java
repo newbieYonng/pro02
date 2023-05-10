@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/update.do")
+/*@WebServlet("/update.do")*/
 public class UpdateServlet extends ViewBaseServlet {
 
     private FruitDAO fruitDAO = new FruitDAOImpl();

@@ -20,9 +20,14 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
 
     private Map<String,Object> beanMap = new HashMap<>();
 
-    public ClassPathXmlApplicationContext() {
+    private String path = "applicationContext.xml" ;
+    public ClassPathXmlApplicationContext(){
+        this("applicationContext.xml");
+    }
+
+    public ClassPathXmlApplicationContext(String path) {
         try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("applicationContext.xml");
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
             //1.创建DocumentBuilderFactory
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             //2.创建DocumentBuilder对象
